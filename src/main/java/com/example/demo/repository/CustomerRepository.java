@@ -15,4 +15,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource(exported = true)
 // @RepositoryRestResource(path = "customers")
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
+    public Customer findByFirstnameAndLastname(String firstname, String lastname);
 }
