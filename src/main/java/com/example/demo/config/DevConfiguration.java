@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Defines a Bean for the DatabaseBootstrap
  */
-@Configuration
+// @Configuration
 public class DevConfiguration {
 
-    @Bean
+    // @Bean
     public DatabaseBootstrap databaseBootstrap() {
         return new DatabaseBootstrap();
     }
