@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: matthiasbachmann
+      changes:
+        - insert:
+            tableName: customer
+            columns:
+              - column:
+                  name: firstname
+                  value: John
+              - column:
+                  name: lastname
+                  value: Doe
