@@ -4,15 +4,22 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 
 @SpringBootApplication
 public class HelloRestApplication {
+
+    @Autowired
+    private Environment env;
 
     public static void main(String[] args) {
         SpringApplication.run(HelloRestApplication.class, args);
@@ -20,14 +27,24 @@ public class HelloRestApplication {
 
     @PostConstruct
     public void afterInit() {
-        System.out.println("\n\nEnter in Browser:\nhttp://localhost:8080 \n" +
-                "http://localhost:8080/v3/api-docs\n" +
-                "http://localhost:8080/v3/api-docs.yaml -> yaml file is downloaded -> https://editor.swagger.io/\n" +
-                "http://localhost:8080/swagger-ui.html \n" +
-                "http://localhost:8080/h2-console  " + "" +
-                "-> mit Generic H2 (Embedded), org.h2.Driver, jdbc:h2:mem:testdb und sa \n\n");
+        boolean hasDevProfile = Arrays.asList(env.getActiveProfiles()).contains("dev");
+        String applicationName = env.getProperty("spring.application.name");
+        String openApiInfo="";
+        String h2ConsoleInfo="";
+        if (hasDevProfile) {
+            openApiInfo= "http://localhost:8080/v3/api-docs\n" +
+                    "http://localhost:8080/v3/api-docs.yaml -> yaml file is downloaded -> https://editor.swagger.io/\n" +
+                    "http://localhost:8080/swagger-ui.html \n";
+            h2ConsoleInfo= "http://localhost:8080/h2-console  " + "" +
+                    "-> mit Generic H2 (Embedded), org.h2.Driver, jdbc:h2:mem:testdb und sa \n";
+        }
+        System.out.println("\n\nApplication [" + applicationName + "] - Enter in Browser:\nhttp://localhost:8080 \n" +
+                openApiInfo +
+                h2ConsoleInfo + "\n" +
+                "Active Profiles: " + Arrays.toString(env.getActiveProfiles()) + "\n\n");
     }
     @Bean
+    @Profile("dev")
     public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
         return new OpenAPI()
                 .components(new Components())
