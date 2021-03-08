@@ -12,3 +12,25 @@ databaseChangeLog:
               - column:
                   name: lastname
                   value: Doe
+
+  - changeSet:
+      id: 4
+      author: matthiasbachmann
+      changes:
+        - insert:
+            tableName: checkout
+            columns:
+              - column:
+                  name: customer_id
+                  value: 1
+
+  - changeSet:
+      id: 5
+      author: matthiasbachmann
+      changes:
+        - insert:
+            tableName: checkout
+            columns:
+              - column:
+                  name: customer_id
+                  value: 2
