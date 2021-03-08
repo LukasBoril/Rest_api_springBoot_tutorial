@@ -47,8 +47,8 @@ public class CustomerRestControllerTest extends AbstractTest {
         String content = extractEmbeddedFromHalJson(response,"customers");
         Customer[] customerList = super.mapFromJson(content, Customer[].class);
         assertTrue(customerList.length > 0);
-        assertEquals(customerList[0].getFirstname(), customer1.getFirstname());
-        assertEquals(customerList[1].getFirstname(), customer2.getFirstname());
+        assertEquals(customerList[0].getFirstname(), "Max");
+        assertEquals(customerList[1].getFirstname(), "John");
 
     }
 
@@ -62,7 +62,7 @@ public class CustomerRestControllerTest extends AbstractTest {
         assertEquals(200, status);
         String response = mvcResult.getResponse().getContentAsString();
         Customer customer = super.mapFromJson(response, Customer.class);
-        assertEquals(customer.getFirstname(), customer1.getFirstname());
+        assertEquals(customer.getFirstname(), "Max");
     }
 
     @Test
