@@ -1,4 +1,4 @@
-# Master: Create the Initial Project Setup
+# Database-Bootstrap: Add a record to the database
 
 [Go to database-bootstrap branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/database-bootstrap)
 
