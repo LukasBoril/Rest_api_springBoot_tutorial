@@ -12,9 +12,26 @@ Create in the resource folder a directory db/migration
 
 <br/>
 
+### add a dependency
+
+<br/>
+Add a dependency to your pom file:
+<br/>
+
+```xml
+      <dependency>
+         <groupId>org.flywaydb</groupId>
+         <artifactId>flyway-core</artifactId>
+      </dependency>
+```
+
+<br/>
+
 ### Migration file V1__init.sql
 
 <br/>
+
+
 
 
 ```sql
