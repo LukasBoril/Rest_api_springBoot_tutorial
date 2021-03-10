@@ -1,7 +1,7 @@
-package com.example.demo.bootstrap;
+package com.example.hellorest.bootstrap;
 
-import com.example.demo.model.Customer;
-import com.example.demo.repository.CustomerRepository;
+import com.example.hellorest.model.Customer;
+import com.example.hellorest.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
