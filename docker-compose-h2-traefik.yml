@@ -1,0 +1,25 @@
+version: '2'
+
+
+networks:
+  proxy:
+    external: true
+
+services:
+
+  hello-rest-h2:
+    image: uportal/hello-rest:latest
+    labels:
+      - "traefik.backend=file"
+      - "traefik.frontend.rule=Host:file.united-portal.com"
+      - "traefik.docker.network=proxy"
+      - "traefik.port=8080"
+      - "traefik.enable=true"
+
+    restart: always
+    networks:
+      - proxy
+    environment:
+      APP_NAME: Hello Rest with H2
+      ACTIVE_PROFILES: dev,h2
+

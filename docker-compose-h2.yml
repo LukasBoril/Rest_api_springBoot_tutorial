@@ -1,0 +1,14 @@
+
+version: '2'
+
+services:
+
+  hello-rest-h2:
+    image: uportal/hello-rest:latest
+
+    restart: always
+    environment:
+      APP_NAME: Hello Rest with H2
+      ACTIVE_PROFILES: dev,h2
+    ports:
+      - 8080:8080
