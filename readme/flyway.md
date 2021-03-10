@@ -4,7 +4,7 @@
 
 ##  Project Structure for Database-Bootstrap
 
-Create in the resource a directory db/migration
+Create in the resource folder a directory db/migration
 
 <br/>
 
