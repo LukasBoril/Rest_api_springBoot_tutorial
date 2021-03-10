@@ -41,7 +41,7 @@ public class HelloRestApplication {
             h2ConsoleInfo= "http://localhost:8080/h2-console  " + "" +
                     "-> mit Generic H2 (Embedded), org.h2.Driver, jdbc:h2:mem:testdb und sa \n";
         }
-        System.out.println("\n\nApplication [" + applicationName + "] - Enter in Browser:\nhttp://localhost:8080 \n" +
+        System.out.println("\n\nApplication [" + applicationName + "] - Enter in Browser:\nhttp://localhost:8080 or http://localhost:8080/api/customers/ \n" +
                 openApiInfo +
                 h2ConsoleInfo + "\n" +
                 "Active Profiles: " + Arrays.toString(env.getActiveProfiles()) + "\n\n");
