@@ -1,4 +1,4 @@
-# Flaway: Do a database migration
+# Flyway: Do a Database Migration
 
 [Go to flyway branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/flyway)
 
