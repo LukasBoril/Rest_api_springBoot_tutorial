@@ -1,6 +1,6 @@
-# Profiles: Create a Rest Controller
+# Rest: Create a Rest Controller
 
-[Go to profiles branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/rest)
+[Go to the Rest branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/rest)
 
 The **rest branch** has been created from the **docker** branch..
 
@@ -14,7 +14,7 @@ Create the package controller and exception.
 
 <br/>
 
-##  New Api for Customer
+##  New Rest Api for the Customer Entity
 
 Enter in the browser:
 
