@@ -1,7 +1,6 @@
-package com.example.demo.repository;
+package com.example.hellorest.repository;
 
-import com.example.demo.model.Checkout;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.hellorest.model.Checkout;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
