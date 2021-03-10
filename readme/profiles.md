@@ -17,7 +17,9 @@ Create the test/resource folder
 ### add a dependency
 
 <br/>
+
 Add a dependency for the mysql database to your pom file:
+
 <br/>
 
 ```xml
@@ -103,6 +105,18 @@ spring.datasource.password=${APP_DB_PASSWORD:password}
 
 <br/>
 
+### application.properties in the test resources
+
+```
+spring.profiles.active=${ACTIVE_PROFILES:dev,h2}
+
+spring.application.name=${APP_NAME:Hello Rest}
+
+# spring.liquibase.change-log=classpath:/db/changelog/db.changelog-master.yaml
+spring.liquibase.change-log=classpath:/db/changelog-option2/master.yaml
+
+springdoc.api-docs.enabled=false
+```
 
 ### Change the DevConfiguration class
 
