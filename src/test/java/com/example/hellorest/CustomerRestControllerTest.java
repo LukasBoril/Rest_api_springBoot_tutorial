@@ -26,7 +26,7 @@ public class CustomerRestControllerTest extends AbstractTest {
         super.setUp();
         customer1= new Customer();
         customer1.setFirstname("Felix");
-        customer1.setLastname("Muster");
+        customer1.setLastname("Mustermann");
         customerRepository.save(customer1);
         customer2= new Customer();
         customer2.setFirstname("Max");
