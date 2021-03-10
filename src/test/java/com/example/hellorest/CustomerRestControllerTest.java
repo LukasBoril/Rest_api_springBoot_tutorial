@@ -1,10 +1,10 @@
-package com.example.demo;
+package com.example.hellorest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.example.demo.model.Customer;
-import com.example.demo.repository.CustomerRepository;
+import com.example.hellorest.model.Customer;
+import com.example.hellorest.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class CustomerRestControllerTest extends AbstractTest {
         super.setUp();
         customer1= new Customer();
         customer1.setFirstname("Felix");
-        customer1.setLastname("Muster");
+        customer1.setLastname("Mustermann");
         customerRepository.save(customer1);
         customer2= new Customer();
         customer2.setFirstname("Max");
