@@ -1,10 +1,10 @@
-package com.example.demo;
+package com.example.hellorest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.example.demo.model.Customer;
-import com.example.demo.repository.CustomerRepository;
+import com.example.hellorest.model.Customer;
+import com.example.hellorest.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +47,8 @@ public class CustomerRestControllerTest extends AbstractTest {
         String content = extractEmbeddedFromHalJson(response,"customers");
         Customer[] customerList = super.mapFromJson(content, Customer[].class);
         assertTrue(customerList.length > 0);
-        assertEquals(customerList[0].getFirstname(), customer1.getFirstname());
-        assertEquals(customerList[1].getFirstname(), customer2.getFirstname());
+        assertEquals(customerList[0].getFirstname(), "Felix");
+        assertEquals(customerList[1].getFirstname(), "Felix");
 
     }
 

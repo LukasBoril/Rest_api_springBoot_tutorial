@@ -1,7 +1,7 @@
-package com.example.demo.repository;
+package com.example.hellorest.repository;
 
 
-import com.example.demo.model.Customer;
+import com.example.hellorest.model.Customer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
