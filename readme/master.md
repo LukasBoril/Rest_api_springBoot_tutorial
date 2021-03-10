@@ -5,30 +5,54 @@
 ## Hands-on 0: Use Spring Initializer in IntelliJ (Ultimate Edition)
 
 Choose Java SDK (can 8, 11, 14, etc)
+
 <br/>
+
 ![create-project-step-1.png](create-project-step-1.png)
+
 <br/>
+
 Choose group and artifact id, build automation, language and packaging, project name, description and package
+
 <br/>
+
 ![create-project-step-2](create-project-step-2.png)
+
 <br/>
+
 Choose the dependencies like Spring Web and SQL H2 Data Base:
+
 <br/>
+
 ![create-project-step-3.png](create-project-step-3.png)
+
 <br/>
+
 ![create-project-step-4.png](create-project-step-4.png)
+
 <br/>
+
 Choose project name and folder:
+
 <br/>
+
 ![create-project-step-5.png](create-project-step-5.png)
+
 <br/>
+
 The following artifacts were created:
 <br/>
+
 ![create-project-generated-artifacts.png](create-project-generated-artifacts.png)
+
 <br/>
+
 The spring-boot plugin allows to start the project.
+
 <br/>
+
 ![create-project-spring-boot-plugin](create-project-spring-boot-plugin.png)
+
 <br/>
 
 
@@ -67,8 +91,11 @@ public class HelloWorldApplication {
 
 ```
 Run the application:
+
 <br/>
+
 ![create-project-run.png](create-project-run.png)
+
 <br>
 
 
@@ -105,9 +132,13 @@ public class HelloControllerTest {
 }
 ```
 <br/>
+
 Run the unit test:
+
 <br/>
+
 ![create-project-run-unit-test.png](create-project-run-unit-test.png)
+
 <br/>
 
 
@@ -118,10 +149,15 @@ Run the unit test:
 Create the project structure with a package for model and repository classes.
 
 <br/>
+
 ![project-structure.png](project-structure.png)
+
 <br/>
+
 ### Pom with dependencies for Open Api
+
 <br/>
+
 ```xml
 <dependency>
   <groupId>org.springdoc</groupId>
@@ -136,6 +172,7 @@ Create the project structure with a package for model and repository classes.
   <version>1.5.5</version>
 </dependency>
 ```
+
 <br/>
 
 ### Application Start
@@ -293,6 +330,7 @@ public class Checkout {
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 }
 ```
+
 <br/>
 
 ### CheckoutRepository
@@ -481,22 +519,40 @@ public class CustomerRestControllerTest extends AbstractTest {
 <br/>
 
 Enter in Browser: http://localhost:8080/h2-console
+
 <br/>
+
 ![check-h2-database.png](check-h2-database.png)
+
 <br/>
+
 After connection to the console you can see all generated tables.
+
 <br/>
+
 ![h2-database.png](h2-database.png)
+
 <br/>
+
 ## Working with Postman
 
+
 You can download postman from [https://www.postman.com/downloads/](https://www.postman.com/downloads/)
+
 <br/>
+
 Create a get request:
+
 <br/>
+
 ![postman-get-request.png](postman-get-request.png)
+
 <br/>
+
 Create a post request:
+
 <br/>
+
 ![postman-post-request.png](postman-post-request.png)
+
 <br/>
