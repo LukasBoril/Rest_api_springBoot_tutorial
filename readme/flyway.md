@@ -1,8 +1,8 @@
-# Flaway: Do a database migration
+# Flaway: Do a Database Migration
 
 [Go to flyway branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/flyway)
 
-##  Project Structure for Database-Bootstrap
+##  Project Structure for Flyway Migration
 
 Create in the resource folder a directory db/migration
 
