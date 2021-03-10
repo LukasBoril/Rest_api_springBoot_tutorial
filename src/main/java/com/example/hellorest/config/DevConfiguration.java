@@ -1,6 +1,6 @@
-package com.example.demo.config;
+package com.example.hellorest.config;
 
-import com.example.demo.bootstrap.DatabaseBootstrap;
+import com.example.hellorest.bootstrap.DatabaseBootstrap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
