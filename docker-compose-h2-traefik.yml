@@ -10,8 +10,8 @@ services:
   hello-rest-h2:
     image: uportal/hello-rest:latest
     labels:
-      - "traefik.backend=file"
-      - "traefik.frontend.rule=Host:file.united-portal.com"
+      - "traefik.backend=hello-rest-h2"
+      - "traefik.frontend.rule=Host:hello-rest-h2.united-portal.com"
       - "traefik.docker.network=proxy"
       - "traefik.port=8080"
       - "traefik.enable=true"
