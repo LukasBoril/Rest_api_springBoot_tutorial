@@ -71,6 +71,36 @@ $  docker pull uportal/hello-rest
 
 <br/>
 
+##  docker-compose
+
+Start the files with:
+
+<br/>
+
+Start with log output in the console
+
+```
+$  docker-compose -f docker-compose-h2.yml up
+```
+
+<br/>
+
+Start in detached mode
+
+```
+$  docker-compose -f docker-compose-h2.yml up -d
+```
+
+<br/>
+
+Delete containers:
+
+```
+$  docker-compose -f docker-compose-h2.yml rm
+```
+
+<br/>
+
 ### Dockerfile
 
 <br/>
