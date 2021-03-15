@@ -25,27 +25,100 @@ You should get the following result:
 ```json
 [
   {
-    firstname: "Max",
-    lastname: "Mustermann"
+    "id": 1,
+    "firstname": "Max",
+    "lastname": "Mustermann"
   },
   {
-    firstname: "John",
-    lastname: "Doe"
+    "id": 2,
+    "firstname": "John",
+    "lastname": "Doe"
   },
   {
-    firstname: "Felix",
-    lastname: "Muster"
+    "id": 3,
+    "firstname": "Felix",
+    "lastname": "Muster"
   }
 ]
 ```
 
 <br/>
 
+http://localhost:8080/api/checkouts/
+
+
+You should get the following result:
+
+```json
+[
+  {
+    id: 1,
+    customer: {
+      id: 1,
+      firstname: "Max",
+      lastname: "Mustermann"
+    }
+  },
+  {
+    id: 2,
+    customer: {
+      id: 2,
+      firstname: "John",
+      lastname: "Doe"
+    }
+  }
+]
+```
+
+<br/>
+
+
 The new controller is visible in the OpenApi view.
 
 ![rest-open-api.png](rest-open-api.png)
 
 <br/>
+
+### Add Getter and Setter for the id in the Model Classes
+
+**Checkout**
+
+<br/>
+
+```java
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+```
+
+<br/>
+
+**Customer**
+
+<br/>
+
+```java
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+```
+
+<br/>
+
+### Add Cascade to the Checkout Model
+
+```java
+    @OneToOne(cascade=CascadeType.ALL)
+    private Customer customer;
+```
 
 ### Create the CustomerController class
 

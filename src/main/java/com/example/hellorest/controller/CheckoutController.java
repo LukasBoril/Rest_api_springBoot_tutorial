@@ -5,6 +5,7 @@ import com.example.hellorest.model.Checkout;
 import com.example.hellorest.repository.CheckoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/checkouts")
+@RequestMapping(value = "/api/checkouts")
 public class CheckoutController {
 
 	private final CheckoutRepository checkoutRepository;
@@ -22,7 +23,7 @@ public class CheckoutController {
 		this.checkoutRepository = checkoutRepository;
 	}
 
-	@RequestMapping( value = "/", method = RequestMethod.GET )
+	@RequestMapping( value = "/", method = RequestMethod.GET)
 	public Iterable<Checkout> list(){
 		return checkoutRepository.findAll();
 	}
