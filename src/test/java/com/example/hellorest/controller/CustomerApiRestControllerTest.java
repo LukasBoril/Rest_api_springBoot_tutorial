@@ -1,7 +1,4 @@
-package com.example.hellorest;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package com.example.hellorest.controller;
 
 import com.example.hellorest.model.Customer;
 import com.example.hellorest.repository.CustomerRepository;
@@ -12,40 +9,31 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-public class CustomerRestControllerTest extends AbstractTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class CustomerApiRestControllerTest extends AbstractTest {
 
     @Autowired
     CustomerRepository customerRepository;
-
-    Customer customer1;
-    Customer customer2;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        customer1= new Customer();
-        customer1.setFirstname("Felix");
-        customer1.setLastname("Mustermann");
-        customerRepository.save(customer1);
-        customer2= new Customer();
-        customer2.setFirstname("Max");
-        customer2.setLastname("Mustermann");
-        customerRepository.save(customer2);
     }
 
     @Test
     public void getCustomersList() throws Exception {
-        String uri = "/customers";
+        String uri = "/api/customers/";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")).andReturn();
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String response = mvcResult.getResponse().getContentAsString();
 
-        String content = extractEmbeddedFromHalJson(response,"customers");
-        Customer[] customerList = super.mapFromJson(content, Customer[].class);
+        Customer[] customerList = super.mapFromJson(response, Customer[].class);
         assertTrue(customerList.length > 0);
         assertEquals(customerList[0].getFirstname(), "Max");
         assertEquals(customerList[1].getFirstname(), "John");
@@ -54,9 +42,9 @@ public class CustomerRestControllerTest extends AbstractTest {
 
     @Test
     public void getOneCustomer() throws Exception {
-        String uri = "/customers/1";
+        String uri = "/api/customers/1";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")).andReturn();
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
@@ -67,7 +55,7 @@ public class CustomerRestControllerTest extends AbstractTest {
 
     @Test
     public void postOneCustomer() throws Exception {
-        String uri = "/customers";
+        String uri = "/api/customers/";
 
         Customer customer= new Customer();
         customer.setFirstname("John");
@@ -76,7 +64,8 @@ public class CustomerRestControllerTest extends AbstractTest {
         String json = super.mapToJson(customer);
 
         MvcResult postMvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json))
                 .andReturn();
 

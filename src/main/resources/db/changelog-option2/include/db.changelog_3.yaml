@@ -63,6 +63,26 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: account_non_expired
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_non_locked
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: credentials_non_expired
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
   - changeSet:
       id: 9
       author: matthiasbachmann
@@ -79,6 +99,18 @@ databaseChangeLog:
               - column:
                   name: password
                   value: admin
+              - column:
+                  name: account_non_expired
+                  value: true
+              - column:
+                  name: account_non_locked
+                  value: true
+              - column:
+                  name: credentials_non_expired
+                  value: true
+              - column:
+                  name: enabled
+                  value: true
         - insert:
             tableName: user
             columns:
@@ -91,7 +123,18 @@ databaseChangeLog:
               - column:
                   name: password
                   value: user
-
+              - column:
+                  name: account_non_expired
+                  value: true
+              - column:
+                  name: account_non_locked
+                  value: true
+              - column:
+                  name: credentials_non_expired
+                  value: true
+              - column:
+                  name: enabled
+                  value: true
   - changeSet:
       id: 10
       author: matthiasbachmann

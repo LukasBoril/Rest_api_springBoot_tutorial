@@ -1,4 +1,4 @@
-package com.example.hellorest;
+package com.example.hellorest.controller;
 
 import com.example.hellorest.model.Checkout;
 import com.example.hellorest.model.Customer;
@@ -10,9 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CheckoutRestControllerTest extends AbstractTest {
+public class CheckoutApiRestControllerTest extends AbstractTest {
 
     @Autowired
     CheckoutRepository checkoutRepository;
@@ -21,53 +22,54 @@ public class CheckoutRestControllerTest extends AbstractTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
     }
 
     @Test
     public void getCheckoutsList() throws Exception {
-        String uri = "/checkouts";
+        String uri = "/api/checkouts/";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")).andReturn();
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String response = mvcResult.getResponse().getContentAsString();
 
-        String content = extractEmbeddedFromHalJson(response,"checkouts");
-        Checkout[] checkoutList = super.mapFromJson(content, Checkout[].class);
+        Checkout[] checkoutList = super.mapFromJson(response, Checkout[].class);
         assertTrue(checkoutList.length > 0);
-
+        assertEquals(checkoutList[0].getCustomer().getFirstname(), "Max");
+        assertEquals(checkoutList[1].getCustomer().getFirstname(), "John");
 
     }
 
     @Test
     public void getOneCheckout() throws Exception {
-        String uri = "/checkouts/1";
+        String uri = "/api/checkouts/1";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")).andReturn();
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String response = mvcResult.getResponse().getContentAsString();
         Checkout checkout = super.mapFromJson(response, Checkout.class);
-        assertNotNull(checkout);
+        assertEquals(checkout.getCustomer().getFirstname(), "Max");
     }
 
     @Test
     public void postOneCheckout() throws Exception {
-        String uri = "/checkouts";
+        String uri = "/api/checkouts/";
 
         Checkout checkout= new Checkout();
         Customer customer1= new Customer();
         customer1.setFirstname("John");
         customer1.setLastname("Doe");
+
         checkout.setCustomer(customer1);
 
         String json = super.mapToJson(checkout);
 
         MvcResult postMvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE, "application/hal+json")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json))
                 .andReturn();
 
@@ -75,7 +77,7 @@ public class CheckoutRestControllerTest extends AbstractTest {
         assertEquals(201, status);
         String response = postMvcResult.getResponse().getContentAsString();
         Checkout postCheckout = super.mapFromJson(response, Checkout.class);
-        assertNotNull(checkout);
+        assertEquals(postCheckout.getCustomer().getFirstname(), customer1.getFirstname());
     }
 
 }

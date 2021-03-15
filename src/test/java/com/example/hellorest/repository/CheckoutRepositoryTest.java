@@ -1,4 +1,4 @@
-package com.example.hellorest;
+package com.example.hellorest.repository;
 
 import com.example.hellorest.model.Checkout;
 import com.example.hellorest.model.Customer;
