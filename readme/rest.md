@@ -57,6 +57,7 @@ import com.example.hellorest.model.Customer;
 import com.example.hellorest.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +80,8 @@ public class CustomerController {
 		return customerRepository.findAll();
 	}
 
-	@RequestMapping( value = "/", method = RequestMethod.POST )
+	@RequestMapping( value = "/", method = RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
 	public Customer create(@RequestBody Customer customer){
 		return customerRepository.save(customer);
 	}
@@ -138,8 +140,6 @@ public class CustomerNotFoundException extends RuntimeException {
 <br/>
 
 ```java
-package com.example.hellorest;
-
 import com.example.hellorest.model.Customer;
 import com.example.hellorest.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -182,7 +182,7 @@ public class CustomerApiRestControllerTest extends AbstractTest {
 
     @Test
     public void getOneCustomer() throws Exception {
-        String uri = "/customers/1";
+        String uri = "/api/customers/1";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
@@ -195,7 +195,7 @@ public class CustomerApiRestControllerTest extends AbstractTest {
 
     @Test
     public void postOneCustomer() throws Exception {
-        String uri = "/customers";
+        String uri = "/api/customers/";
 
         Customer customer= new Customer();
         customer.setFirstname("John");
@@ -205,6 +205,7 @@ public class CustomerApiRestControllerTest extends AbstractTest {
 
         MvcResult postMvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json))
                 .andReturn();
 
@@ -217,8 +218,190 @@ public class CustomerApiRestControllerTest extends AbstractTest {
 
 }
 
+
 ```
 <br/>
+
+### Create the CheckoutController class
+
+<br/>
+
+```java
+import com.example.hellorest.exception.CheckoutNotFoundException;
+import com.example.hellorest.model.Checkout;
+import com.example.hellorest.repository.CheckoutRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/checkouts")
+public class CheckoutController {
+
+	private final CheckoutRepository checkoutRepository;
+
+	@Autowired
+	public CheckoutController(CheckoutRepository checkoutRepository){
+		this.checkoutRepository = checkoutRepository;
+	}
+
+	@RequestMapping( value = "/", method = RequestMethod.GET )
+	public Iterable<Checkout> list(){
+		return checkoutRepository.findAll();
+	}
+
+	@RequestMapping( value = "/", method = RequestMethod.POST )
+	@ResponseStatus(HttpStatus.CREATED)
+	public Checkout create(@RequestBody Checkout checkout){
+		return checkoutRepository.save(checkout);
+	}
+
+	@RequestMapping( value = "/{id}", method = RequestMethod.GET )
+	public Checkout read(@PathVariable(value="id") long id) throws CheckoutNotFoundException {
+		Optional<Checkout> checkout = checkoutRepository.findById(id);
+
+		if( checkout.isEmpty() ){
+			throw new CheckoutNotFoundException("Checkout with id: " + id + " not found.");
+		}
+		return checkout.get();
+	}
+
+	@RequestMapping( value = "/{id}", method = RequestMethod.PUT )
+	public Checkout update(@PathVariable(value="id") long id, @RequestBody Checkout checkout){
+		return checkoutRepository.save(checkout);
+	}
+
+	@RequestMapping( value = "/{id}", method = RequestMethod.DELETE )
+	public void delete(@PathVariable(value="id") long id){
+		checkoutRepository.deleteById(id);
+	}
+
+	@ExceptionHandler(CheckoutNotFoundException.class)
+	public void handleCheckoutNotFound(CheckoutNotFoundException exception, HttpServletResponse response) throws IOException{
+		response.sendError( HttpStatus.NOT_FOUND.value(), exception.getMessage() );
+	}
+
+}
+
+```
+
+<br/>
+
+### Create the CheckoutNotFoundException class
+
+<br/>
+
+```java
+
+public class CheckoutNotFoundException extends RuntimeException {
+
+	private static final long serialVersionUID = -1226439803994500725L;
+
+	public CheckoutNotFoundException(String msg){
+		super(msg);
+	}
+
+}
+
+```
+
+<br/>
+
+### Create the CheckoutApiRestController class
+
+<br/>
+
+```java
+import com.example.hellorest.model.Checkout;
+import com.example.hellorest.model.Customer;
+import com.example.hellorest.repository.CheckoutRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class CheckoutApiRestControllerTest extends AbstractTest {
+
+    @Autowired
+    CheckoutRepository checkoutRepository;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
+
+    @Test
+    public void getCheckoutsList() throws Exception {
+        String uri = "/api/checkouts/";
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String response = mvcResult.getResponse().getContentAsString();
+
+        Checkout[] checkoutList = super.mapFromJson(response, Checkout[].class);
+        assertTrue(checkoutList.length > 0);
+        assertEquals(checkoutList[0].getCustomer().getFirstname(), "Max");
+        assertEquals(checkoutList[1].getCustomer().getFirstname(), "John");
+
+    }
+
+    @Test
+    public void getOneCheckout() throws Exception {
+        String uri = "/api/checkouts/1";
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String response = mvcResult.getResponse().getContentAsString();
+        Checkout checkout = super.mapFromJson(response, Checkout.class);
+        assertEquals(checkout.getCustomer().getFirstname(), "Max");
+    }
+
+    @Test
+    public void postOneCheckout() throws Exception {
+        String uri = "/api/checkouts/";
+
+        Checkout checkout= new Checkout();
+        Customer customer1= new Customer();
+        customer1.setFirstname("John");
+        customer1.setLastname("Doe");
+
+        checkout.setCustomer(customer1);
+
+        String json = super.mapToJson(checkout);
+
+        MvcResult postMvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(json))
+                .andReturn();
+
+        int status = postMvcResult.getResponse().getStatus();
+        assertEquals(201, status);
+        String response = postMvcResult.getResponse().getContentAsString();
+        Checkout postCheckout = super.mapFromJson(response, Checkout.class);
+        assertEquals(postCheckout.getCustomer().getFirstname(), customer1.getFirstname());
+    }
+
+}
+
+```
+
+<br/>
+
 
 ### Change the code snippet in the HelloRestApplication class
 

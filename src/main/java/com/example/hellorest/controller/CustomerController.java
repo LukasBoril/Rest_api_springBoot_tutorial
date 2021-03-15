@@ -5,6 +5,7 @@ import com.example.hellorest.model.Customer;
 import com.example.hellorest.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,8 @@ public class CustomerController {
 		return customerRepository.findAll();
 	}
 
-	@RequestMapping( value = "/", method = RequestMethod.POST )
+	@RequestMapping( value = "/", method = RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
 	public Customer create(@RequestBody Customer customer){
 		return customerRepository.save(customer);
 	}
