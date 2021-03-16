@@ -20,6 +20,13 @@ in order to allow running the unit tests and the application like before.
 
 <br/>
 
+![spring-security-step-1.png](spring-security-step-1.png)
+
+Class diagramm for step 1. Blue colored classes are from the spring-boot framework.
+
+<br/>
+
+
 **Add new Unit Tests**
 
 - add a _UserRepositoryTest_ class
@@ -39,7 +46,7 @@ Create the packages controller, repository, service in the folder _test/java com
 
 <br/>
 
-### add 2 dependencies
+### Add 2 dependencies
 
 <br/>
 
@@ -701,7 +708,7 @@ public class UserRepositoryTest {
 
 <br/>
 
-### add a AppUserDetailsServiceTest class
+### Add a AppUserDetailsServiceTest class
 
 <br/>
 
