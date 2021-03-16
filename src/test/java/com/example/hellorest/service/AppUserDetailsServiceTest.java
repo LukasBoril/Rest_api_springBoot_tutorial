@@ -1,8 +1,6 @@
 package com.example.hellorest.service;
 
 
-import com.example.hellorest.service.AppUserDetailsService;
-import com.example.hellorest.service.UserDetailsImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
