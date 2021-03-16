@@ -6,14 +6,14 @@ The **rest branch** has been created from the **docker** branch..
 
 ## To do in this step
 
-- Add Getter and Setter for the id to the Model Classes
+- Add Getter and Setter for the _id_ to the Model Classes
 - Add Cascade to the Checkout Model
-- Create the CustomerController class
-- Create the CustomerNotFoundException class
-- Create the CustomerApiRestControllerTest class
-- Create the CheckoutController class
-- Create the CheckoutNotFoundException class
-- Create the CheckoutApiRestControllerTest class
+- Create the _CustomerController_ class
+- Create the _CustomerNotFoundException_ class
+- Create the _CustomerApiRestControllerTest class
+- Create the _CheckoutController_ class
+- Create the _CheckoutNotFoundException_ class
+- Create the _CheckoutApiRestControllerTest_ class
 
 
 ##  Project Structure for a Rest Controller
@@ -85,7 +85,7 @@ You should get the following result:
 <br/>
 
 
-The new controller is visible in the OpenApi view.
+The new controller is visible in the _OpenApi view_.
 
 ![rest-open-api.png](rest-open-api.png)
 
@@ -125,7 +125,7 @@ The new controller is visible in the OpenApi view.
 
 <br/>
 
-### Add Cascade to the Checkout Model
+### Add _Cascade_ to the Checkout Model
 
 ```java
     @OneToOne(cascade=CascadeType.ALL)

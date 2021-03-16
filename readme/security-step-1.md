@@ -22,7 +22,7 @@ in order to allow running the unit tests and the application like before.
 
 ![spring-security-step-1.png](spring-security-step-1.png)
 
-Class diagramm for step 1. Blue colored classes are from the spring-boot framework.
+Class diagramm for step 1. _Blue colored classes_ are from the _spring-boot framework_.
 
 <br/>
 
@@ -50,7 +50,7 @@ Create the packages controller, repository, service in the folder _test/java com
 
 <br/>
 
-Add a dependency for the spring-boot-starter-security and the JWT Library.
+Add a dependency for the _spring-boot-starter-security_ and the _JWT Library_.
 
 <br/>
 
