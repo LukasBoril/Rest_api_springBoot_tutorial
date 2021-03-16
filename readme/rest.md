@@ -4,13 +4,25 @@
 
 The **rest branch** has been created from the **docker** branch..
 
+## To do in this step
+
+- Add Getter and Setter for the id to the Model Classes
+- Add Cascade to the Checkout Model
+- Create the CustomerController class
+- Create the CustomerNotFoundException class
+- Create the CustomerApiRestControllerTest class
+- Create the CheckoutController class
+- Create the CheckoutNotFoundException class
+- Create the CheckoutApiRestControllerTest class
+
+
 ##  Project Structure for a Rest Controller
 
 Create the package controller and exception.
 
 <br/>
 
-![rest-project-struture.png](rest-project-struture.png)
+![rest-project-struture.png](rest-project-structure.png)
 
 <br/>
 
@@ -79,7 +91,7 @@ The new controller is visible in the OpenApi view.
 
 <br/>
 
-### Add Getter and Setter for the id in the Model Classes
+### Add Getter and Setter for the id to the Model Classes
 
 **Checkout**
 
@@ -208,7 +220,7 @@ public class CustomerNotFoundException extends RuntimeException {
 <br/>
 
 
-### Create the CustomerApiRestController class
+### Create the CustomerApiRestControllerTest class
 
 <br/>
 
@@ -384,7 +396,7 @@ public class CheckoutNotFoundException extends RuntimeException {
 
 <br/>
 
-### Create the CheckoutApiRestController class
+### Create the CheckoutApiRestControllerTest class
 
 <br/>
 
