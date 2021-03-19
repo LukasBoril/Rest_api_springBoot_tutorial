@@ -15,6 +15,10 @@ This repository contains a Spring Boot tutorial. The tutorial consists of severa
 
 <br/>
 
+## Branches in this tutorial
+
+The following illustration shows how the branches of this tutorial have been created:
+
 ![branch-flow-all.png](readme/branch-flow-all.png)
 
 
