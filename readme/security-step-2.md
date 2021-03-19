@@ -14,9 +14,9 @@
 
 [Go to security-step-2 branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/security-step-2)
 
-The **securtiy-step-2 branch** has been created from the **securtiy-step-1 branch**.
+The **security-step-2 branch** has been created from the **security-step-1 branch**.
 
-The **securtiy-step-2** is providing a **complete solution** for securing the endpoints with _JWT Authentication_.
+The **security-step-2** is providing a **complete solution** for securing the endpoints with _JWT Authentication_.
 New user registration, password reset, sending a confirmation or password reset email is not yet provided in this tutorial.
 
 The login can be done through two different end points:
