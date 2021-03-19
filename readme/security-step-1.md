@@ -1,19 +1,33 @@
 # Security-Step-1: Prerequisites for Spring Security with JWT Authentication
 
-[Go to profiles branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/security-step-1)
 
-The **securtiy-step-1 branch** has been created from the **rest**.
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase](liquibase.md)
+| [profiles](profiles.md)
+| [docker](docker.md)
+| [rest](rest.md)
+| [security-step-1]()
+| [security-step-2]()
+|
 
-The **step 1** is providing a **basic prerequisite** for the stateless JWT Token Authentication Service
 
-- add 2 dependencies
-- add a _User_ and a _Role_ model class
-- add a _UserRepository_ class
-- add a new _liquibase_ migration file _db.changelog_3.yaml_
-- add a _UserDetailsImpl_ class implements the _UserDetails_
-- add an _AppUserDetailsService_ interface extending the _UserDetailsService_ interface
-- add an _AddUserDetailsServiceImpl_ class implementing _AppUserDetailsService_
-- add a _SecurityConfiguration_ class extending _WebSecurityConfigurerAdapter_
+[Go to security-step-1 branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/security-step-1)
+
+The **security-step-1 branch** has been created from the **rest**.
+
+The **step 1** is providing a **basic prerequisite** for the stateless JWT Token Authentication Service.
+
+- [Add four new dependencies](#add-four-new-dependencies)
+- [Add a _User_ model class](#add-user-model-class)
+- [Add a _Role_ model class](#add-role-model-class)
+- [Add a _UserRepository_ class](#add-a-userrepository-class)
+- [Add a new _liquibase_ migration file _db.changelog_3.yaml_](#add-a-new-liquibase-migration-file-dbchangelog_3yaml)
+- [Add a _UserDetailsImpl_ class implements the _UserDetails_](#add-a-userdetailsimpl-class-implements-the-userdetails)
+- [Add an _AppUserDetailsService_ interface extending the _UserDetailsService_ interface](#add-an-appuserdetailsservice-interface-extending-the-userdetailsservice-interface)
+- [Add an _AddUserDetailsServiceImpl_ class implementing _AppUserDetailsService_](#add-an-adduserdetailsserviceimpl-class-implementing-appuserdetailsservice)
+- [Add a _SecurityConfiguration_ class extending _WebSecurityConfigurerAdapter_](#add-a-securityconfiguration-class-extending-websecurityconfigureradapter)
 
 The _SecurityConfiguration_ provides a temporary configuration to **not have any security available**
 in order to allow running the unit tests and the application like before.
@@ -29,8 +43,8 @@ Class diagramm for step 1. _Blue colored classes_ are from the _spring-boot fram
 
 **Add new Unit Tests**
 
-- add a _UserRepositoryTest_ class
-- add a _AppUserDetailsServiceTest_ class
+- [Add a _UserRepositoryTest_ class](#add-a-userrepositorytest-class)
+- [Add a _AppUserDetailsServiceTest_ class](#add-a-appuserdetailsservicetest-class)
 
 <br/>
 
@@ -46,11 +60,10 @@ Create the packages controller, repository, service in the folder _test/java com
 
 <br/>
 
-### Add 2 dependencies
+### Add four new dependencies
 
-<br/>
 
-Add a dependency for the _spring-boot-starter-security_ and the _JWT Library_.
+Add a dependency for the _spring-boot-starter-security_, _spring-security-test_, _springdoc-openapi-security_ and the _JWT Library_.
 
 <br/>
 
@@ -60,16 +73,30 @@ Add a dependency for the _spring-boot-starter-security_ and the _JWT Library_.
          <artifactId>spring-boot-starter-security</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
          <groupId>io.jsonwebtoken</groupId>
          <artifactId>jjwt</artifactId>
          <version>0.6.0</version>
       </dependency>
+       <dependency>
+         <groupId>org.springdoc</groupId>
+         <artifactId>springdoc-openapi-security</artifactId>
+         <version>1.5.6</version>
+      </dependency>
+      
 ```
 
 <br/>
 
 
 ### Add User model class
+
+The _User_ model class contains _fullName_, _email_ and _password_ properties. It has a _@ManyToMany_ relationship to the _Role_ model,  
+which is realized in the database by an intermediate table _user_role_. The other properties are relevant for the spring _UserDetails_ class.
 
 <br/>
 
@@ -198,6 +225,8 @@ public class User {
 
 ### Add Role model class
 
+The _Role_ model class containsa  _role_ property. It has a _@ManyToMany_ relationship to the _User_ model, which is _mappedBy_ the definition _roles_ in the _User_ model.
+
 <br/>
 
 ```java
@@ -258,6 +287,8 @@ public class Role {
 
 ### Add a UserRepository class
 
+The _UserRepository_ interface provides the persistence through the spring _CrudRepository_ interface.
+
 <br/>
 
 ```java
@@ -278,6 +309,18 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 
 ### Add a new liquibase migration file db.changelog_3.yaml
+
+The liquibase migration file creates three tables:
+
+- user
+- role
+- user_role
+
+A foreign key constraint is created to make sure the many to many relationship contains valid data. The database is filled with some default users and roles:
+
+- admin@admin.ch with role ROLE_ADMIN
+- user@user.ch with role ROLE_USER
+
 
 <br/>
 
@@ -483,6 +526,8 @@ databaseChangeLog:
 
 ### Add a UserDetailsImpl class implements the UserDetails
 
+The _UserDetailsImpl_ class implements the spring _UserDetails_ class. It creates from the _roles_ of one _user_ a collection of _GrantedAuthorities_.
+
 <br/>
 
 ```java
@@ -556,6 +601,8 @@ public class UserDetailsImpl implements UserDetails {
 
 ### Add an AppUserDetailsService interface extending the UserDetailsService interface
 
+The _AppUserDetailsService_ interface extends the _UserDetailsService_ interface by a new method _findByEmail_.
+
 <br/>
 
 ```java
@@ -563,9 +610,9 @@ import com.example.hellorest.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 
-public interface AppUserDetailsService extends UserDetailsService{
+public interface AppUserDetailsService extends UserDetailsService {
 
-	public User findByEmail(String email);
+	User findByEmail(String email);
 
 }
 
@@ -574,6 +621,13 @@ public interface AppUserDetailsService extends UserDetailsService{
 <br/>
 
 ### Add an AddUserDetailsServiceImpl class implementing AppUserDetailsService
+
+The _AppUserDetailsServiceImpl_ class implements _AppUserDetailsService_ class. it provides two methods:
+
+- loadUserByUsername(String username)
+- findByEmail
+
+The data is loaded through the _UserRepository_.
 
 <br/>
 
@@ -671,6 +725,8 @@ You should find 3 new tables in the database:
 
 ### Add a UserRepositoryTest class
 
+The _UserRepositoryTest_ class is checking if the two default users "admin@admin.ch" and "user@user.ch" can be loaded and if they have the correct _role_.
+
 <br/>
 
 ```java
@@ -709,6 +765,8 @@ public class UserRepositoryTest {
 <br/>
 
 ### Add a AppUserDetailsServiceTest class
+
+The _AppUserDetailsServiceTest_ class is verifying if we can load a user via its email.
 
 <br/>
 

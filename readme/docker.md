@@ -1,10 +1,52 @@
-# Profiles: Create a docker container and docker-compose files for different setups
+# Docker: Create a docker container and docker-compose files for different setups
+
+
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase](liquibase.md)
+| [profiles](profiles.md)
+| [docker]()
+| [rest](rest.md)
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
 
 [Go to docker branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/docker)
 
 The **docker branch** has been created from the **profiles** branch.
 
+The tutorial shows how to build containers with different configurations:
+
+<br/>
+
+![docker-overview.png](docker-overview.png)
+
+<br/>
+
+The illustration shows the goal of this tutorial:
+
+- docker-compose-h2.yml: an image of _hello-rest_ containing the _jar_ file _hello-rest.0.5.jar_ running in a container _hello-rest-h2_.
+- docker-compose-h2-traefik.yml: an image of _hello-rest_ containing the _jar_ file _hello-rest.0.5.jar_ running in a container _hello-rest-h2_ including the labels of the reverse proxy _traefik_.
+- docker-compose-mysql.yml: an image of _hello-rest_ containing the _jar_ file _hello-rest.0.5.jar_ running in a container _hello-rest-mysql_ including a mysql database and an _adminer database manager_.
+
+<br/>
+
+The tutorial consists of the following steps:
+
+- [Build run and publish the hello-rest project](#build-run-and-publish-the-hello-rest-project).
+- [Create a Docker Container, Run and Publish to Docker](#create-a-docker-container-run-and-publish-to-docker).
+- [Create a Dockerfile](#create-a-dockerfile).
+- [Create a docker-compose-h2.yml file](#create-a-docker-compose-h2yml-file).
+- [Create a docker-compose-mysql.yml file](#create-a-docker-compose-mysqlyml-file).
+- [Create a docker-compose-h2-traefik.yml file](#create-a-docker-compose-h2-traefikyml-file).
+
+
+
 ##  Project Structure for Supporting different container setups
+
+We can see the new files like Dockerfile, docker-compose-h2.yml, docker-compose-mysql.yml, docker-compose-h2-traefik.yml.
 
 <br/>
 
@@ -101,7 +143,9 @@ $  docker-compose -f docker-compose-h2.yml rm
 
 <br/>
 
-### Dockerfile
+### Create a Dockerfile
+
+The Dockerfile takes a slim _JDK11 image_, adds the _hello-rest jar_ file from the _target_ folder with the name _app.jar_. This jar file is started by _java -jar_ command.
 
 <br/>
 
@@ -119,7 +163,9 @@ CMD java ${JVM_OPTS} -jar app.jar
 
 <br/>
 
-### docker-compose-h2.yml file
+### Create a docker-compose-h2.yml file
+
+The _docker-compose-h2.yml_ contains one service with the name _hello-rest-h2_. The environment variables are used for defining the application name and with active spring profiles.
 
 Replace **uportal** with your **dockerhub id**.
 
@@ -145,7 +191,14 @@ services:
 
 <br/>
 
-### docker-compose-mysql.yml file
+### Create a docker-compose-mysql.yml file
+
+The _docker-compose-h2.yml_ contains three services:
+
+- hello-rest-mysql: our hello-rest spring application listening at the host port 8080
+- adminer: a database manager for the mysql database listening at the host port 9090
+- dbmysql8: a mysql database instance listening at the host port 33066
+
 
 Replace **uportal** with your **dockerhub id**.
 
@@ -211,11 +264,12 @@ volumes:
 
 <br/>
 
-### docker-compose-h2-traefik.yml file
+### Create a docker-compose-h2-traefik.yml file
+
+The _docker-compose-h2.yml_ contains one service with the name _hello-rest-h2_. The environment variables are used for defining the application name and with active spring profiles.
+The service registers at the _traefik reverse proxy_ and is available under the url: _hello-rest-h2.united-portal.com_.
 
 Replace **uportal** with your **dockerhub id**.
-
-
 
 <br/>
 
@@ -232,8 +286,8 @@ services:
   hello-rest-h2:
     image: uportal/hello-rest:latest
     labels:
-      - "traefik.backend=file"
-      - "traefik.frontend.rule=Host:file.united-portal.com"
+      - "traefik.backend=hello-rest-h2"
+      - "traefik.frontend.rule=Host:hello-rest-h2.united-portal.com"
       - "traefik.docker.network=proxy"
       - "traefik.port=8080"
       - "traefik.enable=true"

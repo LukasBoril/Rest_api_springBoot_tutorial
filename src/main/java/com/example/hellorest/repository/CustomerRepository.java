@@ -10,10 +10,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 /**
  * Repository class for Customer
  */
-//
-//
-@RepositoryRestResource(exported = true)
-// @RepositoryRestResource(path = "customers")
+@RepositoryRestResource(exported = true, path = "customers")
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
-    public Customer findByFirstnameAndLastname(String firstname, String lastname);
+    Customer findByFirstnameAndLastname(String firstname, String lastname);
 }

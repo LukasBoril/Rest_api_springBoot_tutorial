@@ -1,10 +1,49 @@
 # Master: Create the Initial Project Setup
 
+| [master]()
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase](liquibase.md)
+| [profiles](profiles.md)
+| [docker](docker.md)
+| [rest](rest.md)
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
+
 [Go to master branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/master)
+
+- [https://spring.io/guides](https://spring.io/guides)
+- [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+- [https://docs.spring.io/spring-boot/docs/2.4.4/reference/html/](https://docs.spring.io/spring-boot/docs/2.4.4/reference/html/)
+
+<br/>
+
+The tutorial consists of the following hands-on:
+
+- [Hands-on 0: Use _Spring Initializer_ in _IntelliJ_ (Ultimate Edition)](#hands-on-0-use-spring-initializer-in-intellij-ultimate-edition).
+- [Hands-on 1: First test after initial project setup](#hands-on-1-first-test-after-initial-project-setup).
+- [Hands-on 2: Create Models and Repositories](#hands-on-2-create-models-and-repositories).
+
+<br/>
 
 ## Hands-on 0: Use Spring Initializer in IntelliJ (Ultimate Edition)
 
-Choose Java SDK (can 8, 11, 14, etc)
+In the tutorial _Hands-on 0_ we are generating a new _spring-boot project_ by
+using the _built-in spring initializr_ in _IntelliJ Ultimate_.
+
+_IntelliJ IDEA_ provides the _Spring Initializr_ project wizard that integrates with the _Spring Initializr
+API_ to generate and import your project directly from the _IDE_.
+
+_Spring Initializr_ generates a valid project structure with the following files:
+
+- A build configuration file, for example, _build.gradle_ for _Gradle_ or _pom.xml_ for _Maven_.
+- A class with the _main()_ method to bootstrap the application.
+- An empty _JUnit_ test class.
+- An empty Spring application configuration file: _application.properties_
+
+Choose Java SDK (can 8, 11, 14, etc):
 
 <br/>
 
@@ -20,7 +59,7 @@ Choose group and artifact id, build automation, language and packaging, project 
 
 <br/>
 
-Choose the dependencies like Spring Web and SQL H2 Data Base:
+Choose the dependencies like _Spring Web_ and _SQL H2 Data Base_:
 
 <br/>
 
@@ -58,6 +97,10 @@ The spring-boot plugin allows to start the project.
 
 ## Hands-on 1: First test after initial project setup
 
+In the tutorial _Hands-on 1_ we are preparing a HelloWorldApplication class providing
+the boot of the application and a simple end point on **/** returning _Hello World_.
+Do not forget annotating the class with _@SpringBootApplication_ and _@Controller_.
+
 ###  HelloWorldApplication Klasse
 
 <br/>
@@ -90,6 +133,9 @@ public class HelloWorldApplication {
 }
 
 ```
+
+<br/>
+
 Run the application:
 
 <br/>
@@ -100,6 +146,12 @@ Run the application:
 
 
 ### HelloControllerTest Klasse
+
+The _HelloControllerTest_ class is checking if the endpoint **/** is providing _Hello World_.
+Spring has an easy prepared class _MockMvc_. With the help of the class _@AutoConfigureMockMvc_ we
+get an auto configure of the _MockMvc_. The annotation _@SpringBootTest_ does make sure
+we get a completly configured spring-boot application for testing.  
+The test type is an integration test.
 
 <br/>
 
@@ -131,6 +183,7 @@ public class HelloControllerTest {
     }
 }
 ```
+
 <br/>
 
 Run the unit test:
@@ -144,6 +197,11 @@ Run the unit test:
 
 ## Hands-on 2: Create Models and Repositories
 
+The _hands-on 2_ tutorial is using two model classes and two repository interfaces ot provide
+automatically exposed end points.
+
+<br/>
+
 ### Project Structure
 
 Create the project structure with a package for model and repository classes.
@@ -154,7 +212,26 @@ Create the project structure with a package for model and repository classes.
 
 <br/>
 
+
+### Design Class Diagramm of the Spring Data Rest Example
+
+With the two model classes and the two repository inferfaces we can expose automatically the rest
+end points with crud functionality
+
+- /customers
+- /checkouts
+
+<br/>
+
+![master-dcd.png](master-dcd.png)
+
+<br/>
+
+
 ### Pom with dependencies for Open Api
+
+The dependency _springdoc-openapi-data-rest_ is exposing automatically rest end points.
+The dependency _springdoc-openapi-data-rest_ is documenting the exposed end-points to OpenApi.
 
 <br/>
 
@@ -176,6 +253,16 @@ Create the project structure with a package for model and repository classes.
 <br/>
 
 ### Application Start
+
+The _HelloRestApplication_ class is booting the application. The Method afterInit is writing
+the links for the data and the tools:
+
+- H2 console
+- OpenApi web front end
+- The OpenApi api docs in json or yaml format
+
+The bean _customOpenAPI_ is configuring the _OpenApi_ dependency. In following instruction
+_spring-security-step-2_ we will move this code to an enhanced configuration class
 
 <br/>
 
@@ -222,6 +309,11 @@ public class HelloRestApplication {
 
 ### Application Properties (in Resources)
 
+The application properties are configuring some of the included dependencies like:
+
+- The H2 data base in the memory with the name _jdbc:h2:mem:testdb
+- The url of the OpenApi end point visualization
+
 <br/>
 
 ```
@@ -239,7 +331,13 @@ springdoc.version= @springdoc.version@
 ```
 <br/>
 
-### Model Klasse Customer
+### Model Class Customer
+
+The Customer model class is a JPA entity. The id is generated by the database. The model
+consists beside of the id of 2 properties:
+
+- firstname
+- lastname
 
 <br/>
 
@@ -280,7 +378,11 @@ public class Customer {
 ```
 <br/>
 
-### Model Klasse Checkout
+### Model Class Checkout
+
+The _Checkout_ model class is a JPA entity. The _id_ is generated by the database. The model
+consists beside of the _id_ of one property, which is a _one-to-one relation_ to the _Customer entity_.
+In the database we will get a _foreign key_ in the _checkout table_ pointing to the _customer table_.
 
 <br/>
 
@@ -319,6 +421,9 @@ public class Checkout {
 
 ### CustomerRepository
 
+The _CustomerRepository_ will be automatically exposed by the _spring-starter-data-rest_ under
+the end point _/customers_.
+
 <br/>
 
 ```java
@@ -335,6 +440,9 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
 ### CheckoutRepository
 
+The _CheckoutRepository_ will be automatically exposed by the _spring-starter-data-rest_ under
+the end point _/checkouts_.
+
 <br/>
 
 ```java
@@ -348,7 +456,25 @@ public interface CheckoutRepository extends CrudRepository<Checkout, Long> {
 
 <br/>
 
+## Testing
+
+The tests are from its structure not unit tests. Since we are using the annotiation
+_@SpringBootTest_ we are always starting the whole spring-boot application with all available
+features like dependency injection.
+
+<br/>
+
+![master-test-dcd.png](master-test-dcd.png)
+
+<br/>
+
+The class diagram shows that the integration test is using an _AbstractTest_ class to provide
+commonly used functionality.
+
 ### AbstractTest
+
+The _AbstractTest_ class contains the setup of the WebApplicationContext and some  
+JSON mapper's for normal JSON-Object and the specific HAL embedded JSON Objects.
 
 <br/>
 
@@ -419,6 +545,12 @@ public abstract class AbstractTest {
 <br/>
 
 ### CustomerRestControllerTest
+
+The _CustomerRestControllerTest_ class is verifying_
+
+- getting a list of customers
+- getting one customer
+- posting a new customer
 
 <br/>
 
@@ -516,6 +648,9 @@ public class CustomerRestControllerTest extends AbstractTest {
 
 ## Test H2 Database
 
+With the help of the _h2-console_ we can check the content of the database. The connection
+url is defined by the entry in the _application.properties_ file.
+
 <br/>
 
 Enter in Browser: http://localhost:8080/h2-console
@@ -535,7 +670,6 @@ After connection to the console you can see all generated tables.
 <br/>
 
 ## Working with Postman
-
 
 You can download postman from [https://www.postman.com/downloads/](https://www.postman.com/downloads/)
 

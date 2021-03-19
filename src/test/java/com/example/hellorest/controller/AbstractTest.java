@@ -1,12 +1,17 @@
 package com.example.hellorest.controller;
 
+import com.example.hellorest.auth.TokenAuthenticationService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -20,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public abstract class AbstractTest {
@@ -27,10 +35,43 @@ public abstract class AbstractTest {
     @Autowired
     WebApplicationContext webApplicationContext;
 
-    protected void setUp() {
+    @Value("${hellorest.auth.headername:xauth}")
+    protected TokenAuthenticationService.AuthHeaderName  authHeaderName;
+
+    private final String json = "{\"email\":\"admin@admin.ch\", \"password\":\"admin\"}";
+    private final String bearer = "Bearer ";
+
+    protected String token;
+
+
+    protected void setUp()  {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    protected void setUpWithSecurity()  {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    }
+
+    protected void login ()  {
+        String uri = "/api/login";
+
+        MvcResult postMvcResult = null;
+        try {
+            postMvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(json))
+                    .andReturn();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (postMvcResult != null) {
+            int status = postMvcResult.getResponse().getStatus();
+            assertEquals(200, status);
+
+            token = postMvcResult.getResponse().getHeader(authHeaderName.getHeaderName());
+        }
+    }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -49,7 +90,9 @@ public abstract class AbstractTest {
         try {
             Map<String,Object> map = new HashMap<>();
             map = mapper.readValue(content, new TypeReference<HashMap<String,Object>>(){});
+            @SuppressWarnings("unchecked")
             Map<String,Object> embedded = (Map<String, Object>) map.get("_embedded");
+            @SuppressWarnings("unchecked")
             List<Object> customers = (List<Object>) embedded.get(attribute);
             return mapToJson(customers);
         } catch (IOException e) {
