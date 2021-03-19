@@ -1,8 +1,47 @@
 # Rest: Create a Rest Controller
 
+
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase](liquibase.md)
+| [profiles](profiles.md)
+| [docker](docker.md)
+| [rest]()
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
+
 [Go to the Rest branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/rest)
 
-The **rest branch** has been created from the **docker** branch..
+The **rest branch** has been created from the **docker** branch.
+
+The goal of this tutorial is creating own controllers for the rest end points.
+
+<br/>
+
+![rest-dcd.png](rest-dcd.png)
+
+<br/>
+
+The design class diagram show the new controllers with the end points. Each controller is calling directly the repository.
+The models are used for the persistence to the database and also as dto. This gives us a coupling which can give
+problems in the future if the database, or the rest interface will change. A solution could be using dto's for the rest interface.
+
+<br/>
+
+## To do in this step
+
+- [Add Getter and Setter for the _id_ to the Model Classes](#add-getter-and-setter-for-the-id-to-the-model-classes)
+- [Add Cascade to the Checkout Model](#add-cascade-to-the-checkout-model)
+- [Create the _CustomerController_ class](#create-the-customercontroller-class)
+- [Create the _CustomerNotFoundException_ class](#create-the-customernotfoundexception-class)
+- [Create the _CustomerApiRestControllerTest class](#create-the-customerapirestcontrollertest-class)
+- [Create the _CheckoutController_ class](#create-the-checkoutcontroller-class)
+- [Create the _CheckoutNotFoundException_ class](#create-the-checkoutnotfoundexception-class)
+- [Create the _CheckoutApiRestControllerTest_ class](#create-the-checkoutapirestcontrollertest-class)
+
 
 ##  Project Structure for a Rest Controller
 
@@ -10,7 +49,7 @@ Create the package controller and exception.
 
 <br/>
 
-![rest-project-struture.png](rest-project-struture.png)
+![rest-project-struture.png](rest-project-structure.png)
 
 <br/>
 
@@ -73,13 +112,15 @@ You should get the following result:
 <br/>
 
 
-The new controller is visible in the OpenApi view.
+The new controller is visible in the _OpenApi view_.
 
 ![rest-open-api.png](rest-open-api.png)
 
 <br/>
 
-### Add Getter and Setter for the id in the Model Classes
+### Add Getter and Setter for the id to the Model Classes
+
+In order to get the id as a result of the REST get request, we need adding the getter and setter.
 
 **Checkout**
 
@@ -113,7 +154,9 @@ The new controller is visible in the OpenApi view.
 
 <br/>
 
-### Add Cascade to the Checkout Model
+### Add _Cascade_ to the Checkout Model
+
+The _(cascade=CascadeType.ALL)_ is providing the customer object at the rest get request.
 
 ```java
     @OneToOne(cascade=CascadeType.ALL)
@@ -121,6 +164,14 @@ The new controller is visible in the OpenApi view.
 ```
 
 ### Create the CustomerController class
+
+The _CustomerController_ class is providing the following rest end points:
+
+- Get a list of customers /api/customers/
+- Get one customer /api/customers/<id>
+- Post a new customer /api/customers/
+- Put (change) an existing customer /api/customers/<id>
+- Delete an existing customer /api/customers/<id>
 
 <br/>
 
@@ -191,6 +242,9 @@ public class CustomerController {
 
 ### Create the CustomerNotFoundException class
 
+The _CustomerNotFoundException_ class is thrown if a customer was not found. The RestController's
+_@ExceptionHandler(CustomerNotFoundException.class)_ is returning in this case _HttpStatus.NOT_FOUND_.
+
 <br/>
 
 ```java
@@ -208,7 +262,9 @@ public class CustomerNotFoundException extends RuntimeException {
 <br/>
 
 
-### Create the CustomerApiRestController class
+### Create the CustomerApiRestControllerTest class
+
+The _CustomerApiRestControllerTest_ is verifying list customers, get one customer and post a new customer.
 
 <br/>
 
@@ -297,6 +353,14 @@ public class CustomerApiRestControllerTest extends AbstractTest {
 
 ### Create the CheckoutController class
 
+The _CheckoutController_ class is providing the following rest end points:
+
+- Get a list of checkouts /api/checkouts/
+- Get one checkout /api/checkouts/<id>
+- Post a new checkout /api/checkouts/
+- Put (change) an existing checkout /api/checkouts/<id>
+- Delete an existing checkout /api/checkouts/<id>
+
 <br/>
 
 ```java
@@ -366,6 +430,9 @@ public class CheckoutController {
 
 ### Create the CheckoutNotFoundException class
 
+The _CustomerNotFoundException_ class is thrown if a checkout was not found. The RestController's
+_@CheckoutNotFoundException(CheckoutNotFoundException.class)_ is returning in this case _HttpStatus.NOT_FOUND_.
+
 <br/>
 
 ```java
@@ -384,7 +451,9 @@ public class CheckoutNotFoundException extends RuntimeException {
 
 <br/>
 
-### Create the CheckoutApiRestController class
+### Create the CheckoutApiRestControllerTest class
+
+The _CustomerApiRestControllerTest_ is verifying list checkouts, get one checkout and post a new checkout.
 
 <br/>
 
