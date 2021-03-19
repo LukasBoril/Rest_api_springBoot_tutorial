@@ -99,6 +99,75 @@ Our _liquibase change set_ saves the password without a _hashcode_. This is not 
 
 <br/>
 
+## Verifying the security with OpenApi
+
+Enter in your browser: http://localhost:8080/swagger-ui.html .
+
+Then scroll down to jwt-authentication-controller. Authenticate with admin@admin.ch and password admin.
+
+<br/>
+
+![spring-security-step-2-open-api-authenticate.png](spring-security-step-2-open-api-authenticate.png)
+
+<br/>
+
+Copy the Token without **Bearer** and without the **last '**.
+
+Scroll to the top and press the button _Authorize_:
+
+<br/>
+
+![spring-security-step-2-open-api-auth.png](spring-security-step-2-open-api-auth.png)
+
+<br/>
+
+Enter the Token  without **Bearer** and without the **last '**.
+
+<br/>
+
+![spring-security-step-2-open-api-add-auth.png](spring-security-step-2-open-api-add-auth.png)
+
+<br/>
+
+After that you can try the end points. You can see that OpenApi is adding the Authorization header to the request:
+
+<br/>
+
+![spring-security-step-2-open-api-use-endpoints.png](spring-security-step-2-open-api-use-endpoints.png)
+
+<br/>
+
+## Verifying with CURL
+
+### Login
+
+Firstly we must login:
+
+```
+curl -X 'POST' \
+  'http://localhost:8080/api/authenticate' \
+  -H 'accept: application/hal+json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "admin@admin.ch",
+  "password": "admin"
+}'
+```
+
+Copy the Bearer Token
+
+### Use an end point
+
+Paste the token in the curl command. Do not override the last **'**.
+
+```
+curl -X 'GET' \
+  'http://localhost:8080/checkouts' \
+  -H 'accept: application/hal+json' \
+  -H 'Authorization: Bearer <this token is not valid anymore>eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jaCIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE2MTYxNjA5ODQsImV4cCI6MTYxNjE5Njk4NH0.jvn08tsxgfwh3VMkf6J7MOHlNz-m-ZlkFtUTzorFm-G2XimJIyvSTBI8WE5jCnkXB1lGglFp-Uwwt6II28leTg'
+```
+
+
 ## To do in this step
 
 - [Add a JWT TokenHandler](#add-a-jwt-tokenhander)
