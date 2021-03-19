@@ -1,12 +1,51 @@
 # Profiles: Define different database setups (h2 or mysql)
 
+
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase](liquibase.md)
+| [profiles]()
+| [docker](docker.md)
+| [rest](rest.md)
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
+
 [Go to profiles branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/profiles)
 
 The **profiles branch** has been created from the **liquibase** branch and not from the flyway branch.
 
+[https://docs.spring.io/spring-boot/docs/1.2.0.M1/reference/html/boot-features-profiles.html](https://docs.spring.io/spring-boot/docs/1.2.0.M1/reference/html/boot-features-profiles.html)
+
+## Goal in this tutorial
+
+We want to create several profiles in order to support several use cases for the HelloRest application:
+
+- Supporting a dev (development) profile which gives us an OpenApi frontend
+- Optional databases H2 or MySQL
+- Adding environment variables with defaults to the configuration (for later use with docker)
+
+<br/>
+
+
+## To do in this step
+
+- [Add a dependency for MySQL](#add-a-dependency-for-mysql)
+- [Change the application.properties](#change-the-applicationproperties)
+- [Create an application-dev.properties](#create-an-application-devproperties)
+- [Create an application-h2.properties](#create-an-application-h2properties)
+- [Create an application-mysql.properties](#create-an-application-mysqlproperties)
+- [Create an application.properties in the test resources](#create-an-applicationproperties-in-the-test-resources)
+- [Change the DevConfiguration class](#change-the-devconfiguration-class)
+- [Improve the HelloRestApplication class](#improve-the-hellorestapplication-class)
+
+<br/>
+
 ##  Project Structure for Supporting different Profiles
 
-Create the test/resource folder
+Create the test/resource folder:
 
 <br/>
 
@@ -14,7 +53,7 @@ Create the test/resource folder
 
 <br/>
 
-### add a dependency
+### Add a dependency for MySQL
 
 <br/>
 
@@ -34,7 +73,11 @@ Add a dependency for the mysql database to your pom file:
 
 
 
-### application.properties
+### Change the application.properties
+
+The _application.properties_ file contains the generic properties. Through the property
+_spring.profiles.active=${ACTIVE_PROFILES:dev,h2}_ we can choose which profiles we
+want to add.
 
 <br/>
 
@@ -51,7 +94,9 @@ springdoc.api-docs.enabled=false
 
 <br/>
 
-### application-dev.properties
+### Create an application-dev.properties
+
+The _application-dev.properties_ consists of the properties for the configuration of the _Spring OpenApi_.
 
 <br/>
 
@@ -64,7 +109,9 @@ springdoc.api-docs.enabled=true
 ```
 <br/>
 
-### application-h2.properties
+### Create an application-h2.properties
+
+The _application-h2.properties_ are configuring the H2 database including the _h2-console_.
 
 <br/>
 
@@ -85,7 +132,14 @@ spring.h2.console.settings.web-allow-others=true
 
 <br/>
 
-### application-mysql.properties
+### Create an application-mysql.properties
+
+The _application-mysql.properties_ are configuring the MySql database. The url
+contains options to:
+
+- create the database if it is not existing
+- allow the public key retrieval (mandatory for MySQL8.x)
+- UTF-8 character encoding
 
 <br/>
 
@@ -105,7 +159,9 @@ spring.datasource.password=${APP_DB_PASSWORD:password}
 
 <br/>
 
-### application.properties in the test resources
+### Create an application.properties in the test resources
+
+In order always use the _H2 Database_ for testing we want to create an extra a_pplication.properties_ in the _test resources_.
 
 ```
 spring.profiles.active=${ACTIVE_PROFILES:dev,h2}
