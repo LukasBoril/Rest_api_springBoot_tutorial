@@ -13,6 +13,13 @@ This repository contains a Spring Boot tutorial. The tutorial consists of severa
 - [security-step-1](readme/security-step-1.md): create the prerequisites to the JWT Authentication
 - [security-step-2](readme/security-step-2.md): secure the endpoints with JWT Authentication
 
+<br/>
+
+## Branches in this tutorial
+
+The following illustration shows how the branches of this tutorial have been created:
+
+![branch-flow-all.png](readme/branch-flow-all.png)
 
 
 
