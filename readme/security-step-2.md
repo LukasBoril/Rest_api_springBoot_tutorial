@@ -9,7 +9,7 @@
 | [docker](docker.md)
 | [rest](rest.md)
 | [security-step-1](security-step-1.md)
-| [security-step-2]()
+| [security-step-2](security-step-2.md)
 |
 
 [Go to security-step-2 branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/security-step-2)
