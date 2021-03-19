@@ -1,6 +1,6 @@
 # Master: Create the Initial Project Setup
 
-| [master](master.md)
+| [master]()
 | [database-bootstrap](database-bootstrap.md)
 | [flyway](flyway.md)
 | [liquibase](liquibase.md)
@@ -8,7 +8,7 @@
 | [docker](docker.md)
 | [rest](rest.md)
 | [security-step-1](security-step-1.md)
-| [security-step-2](security-step-1.md)
+| [security-step-2](security-step-2.md)
 |
 
 
