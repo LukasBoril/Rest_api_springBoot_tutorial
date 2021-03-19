@@ -1,8 +1,53 @@
 # Liquibase: Do a Database Migration
 
+
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway](flyway.md)
+| [liquibase]()
+| [profiles](profiles.md)
+| [docker](docker.md)
+| [rest](rest.md)
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
+
 [Go to liquibase branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/liquibase)
 
 The **liquibase branch** has been created from the **database-bootstrap** branch and not from the flyway branch.
+
+<br/>
+
+Liquibase is an open-source database schema change management solution which  
+enables you to manage revisions of your database changes easily.  
+Liquibase makes it easy for anyone involved in the application release process to:
+
+- Eliminate errors and delays when releasing databases.
+- Deploys and Rollback changes for specific versions without needing to know what has already been deployed.
+- Deploy database and application changes together so they always stay in sync.
+
+
+[https://www.liquibase.org/](https://www.liquibase.org/)
+
+<br/>
+
+The tutorial consists of the following steps:
+
+- [Add a dependency to Liquibase](#add-a-dependency-to-liquibase).
+- [Add the liquibase configuration to application.properties](#add-a-dependency-to-liquibase).
+- [Create a db.changelog-master.yaml file in the folder db/changelog](#create-a-dbchangelog-masteryaml-file-in-the-folder-dbchangelog).
+- [Create a master.yaml file in the folder db/changelog-option2](#create-a-masteryaml-file-in-the-folder-dbchangelog-option2).
+- [Create a db.changelog_1.yaml file in the folder db/changelog-option2/include](#create-a-dbchangelog_1yaml-file-in-the-folder-dbchangelog-option2include).
+- [Create a db.changelog_2.yaml file in the folder db/changelog-option2/include](#create-a-dbchangelog_2yaml-file-in-the-folder-dbchangelog-option2include).
+- [Change the unit test CustomerRestControllerTest](#change-the-unit-test-customerrestcontrollertest).
+
+<br/>
+
+![branch-flow-liquibase.png](branch-flow-liquibase.png)
+
+<br/>
+
 
 ##  Project Structure for Liquibase Migration
 
@@ -13,7 +58,7 @@ Create in the resource folder a directory db/changelog and db/changelog-option2
 ![liquibase-project-structure.png](liquibase-project-structure.png)
 <br/>
 
-### add a dependency
+### Add a dependency to Liquibase
 
 <br/>
 
@@ -31,7 +76,7 @@ Add a dependency to your pom file. Make sure, the **flyway dependency** is **not
 
 <br/>
 
-### application.properties
+### Add the liquibase configuration to application.properties
 
 <br/>
 
@@ -55,11 +100,84 @@ spring.jpa.open-in-view=false
 spring.jpa.properties.hibernate.id.new_generator_mappings=false
 
 ```
+<br/>
 
+### Create a db.changelog-master.yaml file in the folder db/changelog
+
+The idea is to add all change sets in one file. This is **NOT RECOMMENDED**. In the
+next chapter we will find more convenient way to work with change sets.
+
+The change set is describing creating 2 tables_
+
+- customer (change set 1)
+- checkout (change set 1)
+- insert a record into the customer table (change set 2)
+
+<br/>
+
+
+```yaml
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: matthiasbachmann
+      changes:
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: checkout
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: bigint
+  - changeSet:
+      id: 2
+      author: matthiasbachmann
+      changes:
+        - insert:
+            tableName: customer
+            columns:
+              - column:
+                  name: firstname
+                  value: Max
+              - column:
+                  name: lastname
+                  value: Mustermann
+
+
+```
 
 <br/>
 
 ### Create a master.yaml file in the folder db/changelog-option2
+
+This example show how to create a _master.yaml_ file with includes all
+change set files from the _include_ folder:
 
 <br/>
 
@@ -74,6 +192,8 @@ databaseChangeLog:
 <br/>
 
 ### Create a db.changelog_1.yaml file in the folder db/changelog-option2/include
+
+This file describes the first set of changes. One file can still contain several change sets.
 
 <br/>
 
@@ -137,6 +257,8 @@ databaseChangeLog:
 
 ### Create a db.changelog_2.yaml file in the folder db/changelog-option2/include
 
+This file describes the second set of changes.
+
 <br/>
 
 ```yaml
@@ -183,6 +305,8 @@ databaseChangeLog:
 
 
 ###  Change the unit test CustomerRestControllerTest
+
+The CustomerRestControllerTest is adapted to the new data. The basic structure is still the same.
 
 <br/>
 
