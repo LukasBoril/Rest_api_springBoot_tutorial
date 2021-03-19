@@ -1,6 +1,47 @@
 # Flyway: Do a Database Migration
 
+
+| [master](master.md)
+| [database-bootstrap](database-bootstrap.md)
+| [flyway]()
+| [liquibase](liquibase.md)
+| [profiles](profiles.md)
+| [docker](docker.md)
+| [rest](rest.md)
+| [security-step-1](security-step-1.md)
+| [security-step-2]()
+|
+
+
 [Go to flyway branch](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest/tree/flyway)
+
+Database migration — in the context of enterprise applications — is an important process to update
+production databases to the current software release.
+
+Database migration means also moving your data from one platform to another.
+There are many reasons you might want to move to a different platform.
+
+Flyway is an open-source database migration tool. It strongly favors simplicity and convention over configuration.
+It is based around just 7 basic commands: Migrate, Clean, Info, Validate, Undo, Baseline and Repair.
+
+With Flyway all changes to the database are called migrations. Migrations can be either versioned or repeatable.  
+Versioned migrations come in 2 forms: regular and undo.
+
+[https://flywaydb.org/](https://flywaydb.org/)
+
+<br/>
+
+The tutorial consists of the following steps:
+
+- [Project Structure for Flyway Migration](#project-structure-for-flyway-migration).
+- [Add a Dependency to flyway-core](#add-a-dependency-to-flyway-core).
+- [Migration file V1__init.sql](#migration-file-v1__initsql).
+- [Migration file V2__init.sql](#migration-file-v2__initsql).
+- [Add new flyway configurations to application.properties](#add-new-flyway-configurations-to-applicationproperties).
+- [Change the unit test CustomerRestControllerTest](#change-the-unit-test-customerrestcontrollertest).
+
+
+<br/>
 
 ##  Project Structure for Flyway Migration
 
@@ -12,10 +53,14 @@ Create in the resource folder a directory db/migration
 
 <br/>
 
-### add a dependency
+### Add a Dependency to flyway-core
+
+Spring boot is automatically configuring the flyway component.
 
 <br/>
-Add a dependency to your pom file:
+
+Add this dependency to your pom file:
+
 <br/>
 
 ```xml
@@ -29,10 +74,10 @@ Add a dependency to your pom file:
 
 ### Migration file V1__init.sql
 
+The migration file _V1__init.sql_ is creating the _CUSTOMER_ and _CHECKOUT_ table. The file has to
+be created in the _resources_ folder _db/migration_.
+
 <br/>
-
-
-
 
 ```sql
 CREATE TABLE CUSTOMER (
@@ -49,7 +94,9 @@ CREATE TABLE CHECKOUT (
 
 <br/>
 
-### Migration file V1__init.sql
+### Migration file V2__init.sql
+
+The migration file _V2__init.sql_ is creating the CUSTOMER and CHECKOUT table.
 
 <br/>
 
@@ -59,7 +106,18 @@ insert into CUSTOMER (firstname, lastname) values ('Max', 'Mustermann');
 
 <br/>
 
-### application.properties
+### Add new flyway configurations to application.properties
+
+We must add 3 new configuration properties for flyway:
+```
+spring.flyway.baseline-on-migrate = true
+spring.flyway.schemas=PUBLIC
+spring.jpa.properties.hibernate.id.new_generator_mappings=false
+```
+
+<br/>
+
+The _application.properties_ file after adding the new properties:
 
 <br/>
 
@@ -89,6 +147,8 @@ springdoc.version= @springdoc.version@
 
 
 ###  Change the unit test CustomerRestControllerTest
+
+We need to adjust the expected results in the _CustomerRestControllerTest_ class.
 
 <br/>
 
