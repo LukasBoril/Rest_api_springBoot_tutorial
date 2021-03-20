@@ -105,3 +105,110 @@ databaseChangeLog:
             value: Muster
         tableName: CUSTOMER
 
+databaseChangeLog:
+- changeSet:
+    id: 1616278832279-1
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CHECKOUT
+            name: ID
+            type: BIGINT
+        - column:
+            name: CUSTOMER_ID
+            type: BIGINT
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616278832279-2
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CUSTOMER
+            name: ID
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: FIRSTNAME
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: LASTNAME
+            type: VARCHAR(255)
+        tableName: CUSTOMER
+- changeSet:
+    id: 1616278832279-3
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 1
+        tableName: CHECKOUT
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 2
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616278832279-4
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: FIRSTNAME
+            value: Max
+        - column:
+            name: LASTNAME
+            value: Mustermann
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: FIRSTNAME
+            value: John
+        - column:
+            name: LASTNAME
+            value: Doe
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 3
+        - column:
+            name: FIRSTNAME
+            value: Felix
+        - column:
+            name: LASTNAME
+            value: Muster
+        tableName: CUSTOMER
+
