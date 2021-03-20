@@ -1,7 +1,9 @@
 # Hello Rest
 [https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest](https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest)
 
-This repository contains a Spring Boot tutorial. The tutorial consists of several step creating a rest backend. Each step is available under a branch
+This repository contains a Spring Boot tutorial. The tutorial consists
+of several steps creating a rest backend. Each step is available under a
+branch.
 
 - [master](readme/master.md): initial project setup with spring boot initializer with model, repository, data-rest, unit-test, h2-console and openapi 3.0
 - [database-bootstrap](readme/database-bootstrap.md): add a record with java to the database
@@ -20,6 +22,5 @@ This repository contains a Spring Boot tutorial. The tutorial consists of severa
 The following illustration shows how the branches of this tutorial have been created:
 
 ![branch-flow-all.png](readme/branch-flow-all.png)
-
 
 

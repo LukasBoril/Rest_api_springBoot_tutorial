@@ -4,7 +4,7 @@
 | [master](master.md)
 | [database-bootstrap](database-bootstrap.md)
 | [flyway](flyway.md)
-| [liquibase]()
+| [liquibase](liquibase.md)
 | [profiles](profiles.md)
 | [docker](docker.md)
 | [rest](rest.md)
@@ -19,9 +19,9 @@ The **liquibase branch** has been created from the **database-bootstrap** branch
 
 <br/>
 
-Liquibase is an open-source database schema change management solution which  
-enables you to manage revisions of your database changes easily.  
-Liquibase makes it easy for anyone involved in the application release process to:
+_Liquibase_ is an open-source database schema change management solution which
+enables you to manage revisions of your database changes easily.
+_Liquibase_ makes it easy for anyone involved in the application release process to:
 
 - Eliminate errors and delays when releasing databases.
 - Deploys and Rollback changes for specific versions without needing to know what has already been deployed.
@@ -41,6 +41,7 @@ The tutorial consists of the following steps:
 - [Create a db.changelog_1.yaml file in the folder db/changelog-option2/include](#create-a-dbchangelog_1yaml-file-in-the-folder-dbchangelog-option2include).
 - [Create a db.changelog_2.yaml file in the folder db/changelog-option2/include](#create-a-dbchangelog_2yaml-file-in-the-folder-dbchangelog-option2include).
 - [Change the unit test CustomerRestControllerTest](#change-the-unit-test-customerrestcontrollertest).
+- [Reverse Engineer the H2 database to a changeset with generateChangeLog](#reverse-engineer-the-h2-database-to-a-changeset-with-generatechangelog)
 
 <br/>
 
@@ -49,9 +50,9 @@ The tutorial consists of the following steps:
 <br/>
 
 
-##  Project Structure for Liquibase Migration
+##  Project Structure for the Liquibase Migration
 
-Create in the resource folder a directory db/changelog and db/changelog-option2
+Create in the resource folder a directory _db/changelog_ and _db/changelog-option2_.
 
 <br/>
 
@@ -60,11 +61,9 @@ Create in the resource folder a directory db/changelog and db/changelog-option2
 
 ### Add a dependency to Liquibase
 
-<br/>
 
 Add a dependency to your pom file. Make sure, the **flyway dependency** is **not** in the pom file:
 
-<br/>
 
 ```xml
       <dependency>
@@ -78,7 +77,8 @@ Add a dependency to your pom file. Make sure, the **flyway dependency** is **not
 
 ### Add the liquibase configuration to application.properties
 
-<br/>
+Add the new properties _spring.liquibase.change-log_ to the _application.properties_ file:
+
 
 ```
 spring.jpa.hibernate.ddl-auto=none
@@ -112,8 +112,6 @@ The change set is describing creating 2 tables_
 - customer (change set 1)
 - checkout (change set 1)
 - insert a record into the customer table (change set 2)
-
-<br/>
 
 
 ```yaml
@@ -179,7 +177,6 @@ databaseChangeLog:
 This example show how to create a _master.yaml_ file with includes all
 change set files from the _include_ folder:
 
-<br/>
 
 ```yaml
 databaseChangeLog:
@@ -195,7 +192,6 @@ databaseChangeLog:
 
 This file describes the first set of changes. One file can still contain several change sets.
 
-<br/>
 
 ```yaml
 databaseChangeLog:
@@ -258,8 +254,6 @@ databaseChangeLog:
 ### Create a db.changelog_2.yaml file in the folder db/changelog-option2/include
 
 This file describes the second set of changes.
-
-<br/>
 
 ```yaml
 databaseChangeLog:
@@ -405,10 +399,381 @@ public class CustomerRestControllerTest extends AbstractTest {
 
 ###  Check the h2 console
 
-<br/>
+The _h2-console_ shows the new _liquibase_ tables _DATABASECHANGELOG_ and _DATABASECHANGELOGLOCK_.
+
+The customer table.
 
 ![liquibase-h2-customer.png](liquibase-h2-customer.png)
 
+
 <br/>
 
+The checkout table
+
 ![liquibase-h2-checkout.png](liquibase-h2-checkout.png)
+
+<br/>
+
+## Reverse Engineer the H2 database to a changeset with generateChangeLog
+
+_Liquibase_ can create automatically a change set from an existing database. The configuration
+of liquibase including the url of the database can be done with a _liquibase.properties_ file.
+
+The _liquibase.properties_ file is placed in the folder _/src/main/resources/db_.
+
+
+```yaml
+# liquibase.properties
+
+# The output changeLogFile can be xml, yml or json
+outputChangeLogFile: dbchangelog.yml
+driver: org.h2.Driver
+url: jdbc:h2:file:./data/testdb
+username: sa
+password:
+promptOnNonLocalDatabase: false
+
+# diff used for generateChangeLog and diff
+diffTypes: tables, views, columns, indexes, foreignkeys, primarykeys, uniqueconstraints, data
+
+
+# ChangeLog configuration
+databaseChangeLogTableName: DATABASECHANGELOG
+databaseChangeLogLockTableName: DATABASECHANGELOGLOCK
+
+```
+
+<br/>
+
+_Liquibase_ shall be executed by a maven plugin. Add the following _plugin_ description to your _pom.xml_ file:
+
+
+```xml
+<build>
+    <plugins> 
+       ...
+    
+        <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.2.2</version>
+            <configuration>
+               <propertyFileWillOverride>true</propertyFileWillOverride>
+               <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+            </configuration>
+         </plugin>
+         
+       ...
+    </plugins>      
+</build>    
+```
+<br/>
+
+The _plugin_ is visible in the _Maven_ dialog:
+
+![liquibase-plugin.png](liquibase-plugin.png)
+
+<br/>
+
+_Liquibase_ can only work with _h2-databases_ if the database is saved to a file. For this reason we must change
+the property _spring.datasource.url_ in the _application.properties_ file.
+
+Uncomment the _url_ property _spring.datasource.url=jdbc:h2:file:./data/testdb_ and comment the _mem url_ property.
+
+```
+spring.datasource.url=jdbc:h2:file:./data/testdb
+# spring.datasource.url=jdbc:h2:mem:testdb
+```
+
+### You can use the following procedure to create the _changeset_
+1. Start the _spring-boot_ application.
+2. The _h2-database_ file _testdb.mv.db_ will be created in the folder _data_.
+3. **Stop** the _spring boot_ application.
+4. Start the _liquibase:generateChangeLog_.
+   1. In the _Maven_ dialog click on  _liquibase:generateChangeLog_.
+   2. or run in the terminal _mvn liquibase:generateChangeLog_.
+5. Copy the generated file in the project root to the correct folder in _src/main/resources/db_.
+
+<br/>
+
+![liquibase-h2-file.png](liquibase-h2-file.png)
+
+The created database file _testdb.mv.db_.
+
+<br/>
+
+The generated _changelog_ file (you can change the extension to _xml_ or _json_ in the _liquibase.properties_ file):
+
+![liquibase-generated-file.png](liquibase-generated-file.png)
+
+<br/>
+
+```
+databaseChangeLog:
+- changeSet:
+    id: 1616277557574-1
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CHECKOUT
+            name: ID
+            type: BIGINT
+        - column:
+            name: CUSTOMER_ID
+            type: BIGINT
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616277557574-2
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CUSTOMER
+            name: ID
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: FIRSTNAME
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: LASTNAME
+            type: VARCHAR(255)
+        tableName: CUSTOMER
+- changeSet:
+    id: 1616277557574-3
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 1
+        tableName: CHECKOUT
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 2
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616277557574-4
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: FIRSTNAME
+            value: Max
+        - column:
+            name: LASTNAME
+            value: Mustermann
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: FIRSTNAME
+            value: John
+        - column:
+            name: LASTNAME
+            value: Doe
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 3
+        - column:
+            name: FIRSTNAME
+            value: Felix
+        - column:
+            name: LASTNAME
+            value: Muster
+        tableName: CUSTOMER
+
+databaseChangeLog:
+- changeSet:
+    id: 1616278832279-1
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CHECKOUT
+            name: ID
+            type: BIGINT
+        - column:
+            name: CUSTOMER_ID
+            type: BIGINT
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616278832279-2
+    author: mbach (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: PK_CUSTOMER
+            name: ID
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: FIRSTNAME
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: LASTNAME
+            type: VARCHAR(255)
+        tableName: CUSTOMER
+- changeSet:
+    id: 1616278832279-3
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 1
+        tableName: CHECKOUT
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: CUSTOMER_ID
+            valueNumeric: 2
+        tableName: CHECKOUT
+- changeSet:
+    id: 1616278832279-4
+    author: mbach (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 1
+        - column:
+            name: FIRSTNAME
+            value: Max
+        - column:
+            name: LASTNAME
+            value: Mustermann
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 2
+        - column:
+            name: FIRSTNAME
+            value: John
+        - column:
+            name: LASTNAME
+            value: Doe
+        tableName: CUSTOMER
+    - insert:
+        columns:
+        - column:
+            name: ID
+            valueNumeric: 3
+        - column:
+            name: FIRSTNAME
+            value: Felix
+        - column:
+            name: LASTNAME
+            value: Muster
+        tableName: CUSTOMER
+
+
+```
+
+
+The console _log-output_ for generating the _liquibase changelog_:
+
+```
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:hello-rest >-----------------------
+[INFO] Building hello-rest 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- liquibase-maven-plugin:4.2.2:generateChangeLog (default-cli) @ hello-rest ---
+[INFO] ------------------------------------------------------------------------
+[project, pluginDescriptor]
+[INFO] Parsing Liquibase Properties File
+[INFO]   File: src/main/resources/db/liquibase.properties
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] 
+[INFO] Liquibase Community 4.2.2 by Datical
+[INFO] ####################################################
+##   _     _             _ _                      ##
+##  | |   (_)           (_) |                     ##
+##  | |    _  __ _ _   _ _| |__   __ _ ___  ___   ##
+##  | |   | |/ _` | | | | | '_ \ / _` / __|/ _ \  ##
+##  | |___| | (_| | |_| | | |_) | (_| \__ \  __/  ##
+##  \_____/_|\__, |\__,_|_|_.__/ \__,_|___/\___|  ##
+##              | |                               ##
+##              |_|                               ##
+##                                                ## 
+##  Get documentation at docs.liquibase.com       ##
+##  Get certified courses at learn.liquibase.com  ## 
+##  Free schema change activity reports at        ##
+##      https://hub.liquibase.com                 ##
+##                                                ##
+####################################################
+Starte Liquibase am 23:20:31 (Version 4.2.2 #36, kompiliert am 2020-12-09 20:07+0000)
+[INFO] Parsing Liquibase Properties File src/main/resources/db/liquibase.properties for changeLog parameters
+[INFO] Executing on Database: jdbc:h2:file:./data/testdb
+[INFO] Generating Change Log from database SA @ jdbc:h2:file:./data/testdb (Default Schema: PUBLIC)
+BEST PRACTICE: The changelog generated by diffChangeLog/generateChangeLog should be inspected for correctness and completeness before being deployed.
+[INFO] dbchangelog.yml exists, appending
+[INFO] Output written to Change Log file, dbchangelog.yml
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.092 s
+[INFO] Finished at: 2021-03-20T23:20:32+01:00
+[INFO] ------------------------------------------------------------------------
+```
