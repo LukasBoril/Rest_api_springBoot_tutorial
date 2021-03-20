@@ -11,7 +11,8 @@ Each step is available under a **branch**.
 - [profiles](readme/profiles.md): add profiles for dev (development) and specific profiles for h2 or mysql database, add environment variables.
 - [docker](readme/docker.md): create a container and use docker-compose files for starting the backend with h2 database or mysql database incl. adminer.
 - [rest](readme/rest.md): create your own rest endpoints.
-
+- [security-step-1](readme/security-step-1.md): create the prerequisites to the JWT Authentication
+- [security-step-2](readme/security-step-2.md): secure the endpoints with JWT Authentication
 
 
 <br/>
