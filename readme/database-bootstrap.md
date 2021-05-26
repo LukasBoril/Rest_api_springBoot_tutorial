@@ -48,6 +48,18 @@ Create the packages config and bootstrap:
 
 <br/>
 
+### Class CustomerRepository
+
+Add the method _findByFirstnameAndLastname_ to the Customer Repository class.
+
+```java
+@RepositoryRestResource(exported = true)
+// @RepositoryRestResource(path = "customers")
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+    public Customer findByFirstnameAndLastname(String firstname, String lastname);
+}
+```
+
 ### Class DatabaseBootstrap
 
 The _DatabaseBootstrap_ class is implementing the spring life cycle events through the interface _InitializingBean_.
