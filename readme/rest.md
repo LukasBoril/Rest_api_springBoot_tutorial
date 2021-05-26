@@ -557,3 +557,58 @@ The code snippet contains the new url to the http://localhost:8080/api/customers
 
 ```
 
+## Optional: Remove the Spring Data Rest API
+
+Since we have our own REST end points.... we can remove the spring-data-rest dependencies and the dependant source code:
+
+Remove or comment the data-rest dependencies for spring and open api in _pom.xml_:
+
+**pom.xml**
+```xml
+
+       <!-- Rest Interfaces 
+        <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-data-rest</artifactId>
+      </dependency> -->
+
+
+      <!-- Open API for Automatic Rest Interfaces 
+      <dependency>
+         <groupId>org.springdoc</groupId>
+         <artifactId>springdoc-openapi-data-rest</artifactId>
+         <version>1.5.5</version>
+      </dependency> -->
+  
+```
+
+
+Modify the _CustomerRepository_:
+
+```java
+package com.example.hellorest.repository;
+
+import com.example.hellorest.model.Customer;
+import org.springframework.data.repository.CrudRepository;
+
+/**
+ * Repository class for Customer
+ */
+
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+    public Customer findByFirstnameAndLastname(String firstname, String lastname);
+}
+```
+
+Remove the UnitTests _CustomerRestControllerTest_ and _CheckoutRestControllerTest_.
+
+
+Modify the HelloRestApplication class
+
+```java
+System.out.println("\n\nApplication [" + applicationName + "] - Enter in Browser:\nhttp://localhost:8080/api/customers/ \n" +
+                openApiInfo +
+                h2ConsoleInfo + "\n" +
+                "Active Profiles: " + Arrays.toString(env.getActiveProfiles()) + "\n\n");
+```
+
