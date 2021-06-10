@@ -62,7 +62,7 @@ Use a Mac, Linux, WSL2 or git bash console.
 
 ```
 git clone https://github.zhaw.ch/bacn/ase2-spring-boot-hellorest
-cd file-system-storage
+cd ase2-spring-boot-hellorest
 git checkout docker
 ./mvnw clean package
 java -jar target/hello-rest*.jar
